@@ -1,7 +1,5 @@
 package weather
 
-import "errors"
-
 type PointsResponseBody struct {
 	ForecastUrl string `json:"forecast"`
 	// unused response fields not added to struct
