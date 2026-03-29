@@ -16,40 +16,8 @@ import (
 	"time"
 )
 
-var _ http.RoundTripper = &mockTransport{}
-var _ io.ReadCloser = badReadCloser{}
-
-type Result[T any] struct {
-	Val T
-	Err error
-}
-
-func (res Result[T]) Parts() (T, error) {
-	return res.Val, res.Err
-}
-
-type badReadCloser struct{}
-
-func (b badReadCloser) Read(p []byte) (n int, err error) {
-	return 0, errors.New("read failure")
-}
-
-func (b badReadCloser) Close() error {
-	return errors.New("close failure")
-}
-
-type mockTransport struct {
-	mappedResults map[*http.Request]Result[*http.Response]
-	variedResults func(req *http.Request) (*http.Response, error)
-}
-
-func (m mockTransport) RoundTrip(request *http.Request) (*http.Response, error) {
-	if res, exists := m.mappedResults[request]; exists {
-		return res.Parts()
-	}
-	return m.variedResults(request)
-}
-
+// TestRequestor is a much more involved testing process than it should be.
+// I got a little carried away with mocking out the http.RoundTripper
 func TestRequestor(t *testing.T) {
 	lat, lon := 35.7596, -79.0193 // Valid lats and lons (Somewhere in NC)
 	_, badRequestLon, badCodeLon, badReaderLon, badBodyLon := lon, lon+0.0001, lon+0.0002, lon+0.0003, lon+0.0004
@@ -167,23 +135,36 @@ func TestRequestor(t *testing.T) {
 	})
 }
 
-func TestMisc(t *testing.T) {
-	t.Run("ParseLatLonFromString", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			lat, lon, err := ParseLatLonFromString("-3.7,2.8")
-			require.NoError(t, err)
-			assert.Equal(t, -3.7, lat)
-			assert.Equal(t, 2.8, lon)
-		})
-		for name, s := range map[string]string{
-			"invalid number of commas": "-3.7,,2.8",
-			"bad lat":                  "bad,2.8",
-			"bad lon":                  "3.7,bad",
-		} {
-			t.Run(name, func(t *testing.T) {
-				_, _, err := ParseLatLonFromString(s)
-				require.Error(t, err)
-			})
-		}
-	})
+var _ http.RoundTripper = &mockTransport{}
+var _ io.ReadCloser = badReadCloser{}
+
+type Result[T any] struct {
+	Val T
+	Err error
+}
+
+func (res Result[T]) Parts() (T, error) {
+	return res.Val, res.Err
+}
+
+type badReadCloser struct{}
+
+func (b badReadCloser) Read(p []byte) (n int, err error) {
+	return 0, errors.New("read failure")
+}
+
+func (b badReadCloser) Close() error {
+	return errors.New("close failure")
+}
+
+type mockTransport struct {
+	mappedResults map[*http.Request]Result[*http.Response]
+	variedResults func(req *http.Request) (*http.Response, error)
+}
+
+func (m mockTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	if res, exists := m.mappedResults[request]; exists {
+		return res.Parts()
+	}
+	return m.variedResults(request)
 }

@@ -27,7 +27,7 @@ The API exposes two endpoints
 
 # Running Locally
 
-### Optional build step
+### OPTIONAL build step
 
 This step is __OPTIONAL__, go run bundles the build step, so only do this if you really want to build the binary before
 running it. To skip the distinct build step, continue on to [the next section](#without-a-distinct-build-step)
@@ -105,7 +105,7 @@ There are 4 folders. 2 of which are actually important to the program's function
 
 | Directory | Contents                                                                   | Core       |
 |-----------|----------------------------------------------------------------------------|------------|
-| cmd       | houses the main function of the server                                     | Yes        |
+| cmd       | houses the main function of the server, plus handlers and middleware       | Yes        |
 | weather   | Everything actually used to go interact with the .gov external weather api | Yes        |
 | logging   | everything related to setting up the logger for the program.               | Not Really |
 | images    | Images used within README.md                                               | No         |

@@ -10,12 +10,15 @@ import (
 	"strings"
 )
 
+// Requestor is an interface with methods to go get weather data from an external source
 type Requestor interface {
+	// GetPointInfo gets weather data from the specified URL
 	GetPointInfo(url string) (Data, error)
+	// GetForecastUrl gets the URL of a forecast nearest a coordinate
 	GetForecastUrl(lat, lon float64) (string, error)
 }
 
-// ActualRequestor is the default requestor the endpoint uses. Some tests use a mock requestor
+// ActualRequestor is the default Requestor the endpoint uses. Some tests use a mock requestor instead
 type ActualRequestor struct {
 	Client *http.Client
 }

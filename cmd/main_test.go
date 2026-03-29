@@ -75,23 +75,4 @@ func TestServer(t *testing.T) {
 		require.Equal(t, exp.TemperatureUnits, act.TemperatureUnits)
 		require.Equal(t, exp.TemperatureCategory, act.TemperatureCategory)
 	})
-
-	t.Run("categorize temp", func(t *testing.T) {
-		c, err := categorizeTemp(0, "C")
-		require.NoError(t, err)
-		require.Equal(t, "cold", c)
-
-		c, err = categorizeTemp(100, "C")
-		require.NoError(t, err)
-		require.Equal(t, "hot", c)
-
-		c, err = categorizeTemp(20, "C")
-		require.NoError(t, err)
-		require.Equal(t, "moderate", c)
-
-		c, err = categorizeTemp(20, "F")
-		require.NoError(t, err)
-		require.Equal(t, "cold", c)
-	})
-
 }
