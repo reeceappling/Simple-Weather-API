@@ -1,4 +1,4 @@
-# Simple-Weather-API
+# Simple Weather API
 
 A simple weather API which I was requested to create.
 
