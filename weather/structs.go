@@ -1,5 +1,14 @@
 package weather
 
+import "errors"
+
+var (
+	errNon200        = errors.New("non-200 response")
+	errRequesting    = errors.New("failed when making request")
+	errReading       = errors.New("failed ro read response")
+	errUnmarshalling = errors.New("failed to unmarshal response")
+)
+
 // PointsResponseBody is the format of the response retrieved within Requestor.GetForecastUrl
 type PointsResponseBody struct {
 	ForecastUrl string `json:"forecast"`

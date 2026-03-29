@@ -17,12 +17,17 @@ import (
 	"time"
 )
 
+const (
+	appName     = "WeatherAPI"
+	defaultPort = 9000
+)
+
 func main() {
 	log := logging.LoggerFactoryFor("WeatherAPI")
 	ctx := logging.SetLogger(context.Background(), log)
-	port := flag.Int("port", 9000, "port to host the api on")
+	port := flag.Int("port", defaultPort, "port to host the api on")
 	flag.Parse()
-	log.Infof("Starting WeatherAPI on port %d", *port)
+	log.Infof("Starting %s on port %d", appName, *port)
 	createAndRunServer(ctx, *port)
 }
 
@@ -30,7 +35,6 @@ func createAndRunServer(ctx context.Context, port int) {
 	log := logging.GetLogger(ctx)
 
 	var err error = nil
-	appName := "Weather API"
 
 	// defer a panic-recovery gofunc, so we can properly log stacktraces if a panic were to occur
 	defer func() {

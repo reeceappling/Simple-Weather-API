@@ -66,13 +66,6 @@ func ParseLatLonFromString(s string) (float64, float64, error) {
 	return lat, lon, nil
 }
 
-var (
-	errNon200        = errors.New("non-200 response")
-	errRequesting    = errors.New("failed when making request")
-	errReading       = errors.New("failed ro read response")
-	errUnmarshalling = errors.New("failed to unmarshal response")
-)
-
 func (r ActualRequestor) GetPointInfo(url string) (Data, error) {
 	results := Data{}
 

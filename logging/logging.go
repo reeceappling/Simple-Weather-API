@@ -8,6 +8,11 @@ import (
 	"os"
 )
 
+// Logger context key to define a new type so ctx strings from other packages cant conflict with it
+type ctxKey string
+
+const loggerKey = ctxKey("logger")
+
 type Logger struct {
 	*zap.SugaredLogger
 	LevelId string
@@ -53,11 +58,6 @@ func LoggerFactoryFor(component string) *Logger {
 		).Sugar()
 	return &Logger{logger, newId}
 }
-
-// Logger context key to define a new type so ctx strings from other packages cant conflict with it
-type ctxKey string
-
-const loggerKey = ctxKey("logger")
 
 func SetLogger(parent context.Context, logger *Logger) context.Context {
 	return context.WithValue(parent, loggerKey, logger)
