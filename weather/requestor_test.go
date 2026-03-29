@@ -112,6 +112,7 @@ func TestRequestor(t *testing.T) {
 			assert.True(t, slices.Contains([]string{"F", "C", "K"}, firstPd.TemperatureUnit))
 			assert.NotEmpty(t, firstPd.ShortForecast)
 		})
+
 		t.Run("errors", func(t *testing.T) {
 			for i, errLat := range []float64{latFirstRequestFail, latSecondRequestFail} {
 				t.Run(strconv.Itoa(i), func(t *testing.T) {
@@ -135,9 +136,10 @@ func TestRequestor(t *testing.T) {
 	})
 }
 
-var _ http.RoundTripper = &mockTransport{}
 var _ io.ReadCloser = badReadCloser{}
+var _ http.RoundTripper = &mockTransport{}
 
+// Result is a generic result and/or error type
 type Result[T any] struct {
 	Val T
 	Err error
