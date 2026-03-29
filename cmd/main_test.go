@@ -49,7 +49,7 @@ func TestServer(t *testing.T) {
 	}
 	mr := mockRequestor{}
 	t.Run("more succinct testing format", func(t *testing.T) {
-		act, err := getWeatherFor(mr, lat, lon)
+		act, err := GetFor(mr, lat, lon)
 		require.NoError(t, err)
 		require.Equal(t, exp.ShortForecast, act.ShortForecast)
 		require.Equal(t, exp.Temperature, act.Temperature)

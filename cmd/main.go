@@ -110,34 +110,8 @@ func rootHandler() http.Handler {
 	})
 }
 
-// getWeatherFor is the main function of the endpoint, but after we've already parsed all necessary data out of the request, so it is easier to test than a handler.
-func getWeatherFor(requestor weather.Requestor, lat, lon float64) (*weather.Output, error) {
-	url, err := requestor.GetForecastUrl(lat, lon)
-	if err != nil {
-		return nil, errors.Join(errors.New("request 1 failed"), err)
-	}
-	resp, err := requestor.GetPointInfo(url)
-	if err != nil {
-		return nil, errors.Join(errors.New("request 2 failed"), err)
-	}
-	if len(resp.Properties.Periods) == 0 {
-		return nil, errors.Join(errors.New("no results found on response"), err)
-	}
-	data := resp.Properties.Periods[0]
-	category, err := categorizeTemp(float64(data.Temperature), data.TemperatureUnit)
-	if err != nil {
-		return nil, errors.Join(errors.New("failed to categorize temperature"), err)
-	}
-	return weather.NewOutput(data)
-	return &weather.Output{
-		ShortForecast:       data.ShortForecast,
-		Temperature:         data.Temperature,
-		TemperatureUnits:    data.TemperatureUnit,
-		TemperatureCategory: category,
-	}, nil
-}
-
 // getWeatherHandler should only be passed a non-nil requestor if you don't want to use the default (for example in unit tests)
+// The bulk of the functionality actually occurs within weather.For
 func getWeatherHandler(requestor weather.Requestor) http.Handler {
 	// Use the default requestor if current is nil
 	if requestor == nil {
@@ -151,7 +125,7 @@ func getWeatherHandler(requestor weather.Requestor) http.Handler {
 			http.Error(w, "Failed to get latLon from request", http.StatusBadRequest)
 			return
 		}
-		out, err := getWeatherFor(requestor, lat, lon)
+		out, err := weather.For(requestor, lat, lon)
 		if err != nil {
 			log.Errorw("Failed to get weather for latLon", "error", err)
 			http.Error(w, "Failed to get weather for latLon", http.StatusInternalServerError)
