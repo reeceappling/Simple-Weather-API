@@ -34,6 +34,7 @@ type Output struct {
 	TemperatureCategory string `json:"temperatureCategory"`
 }
 
+// NewOutput creates an output from weather response data, also calculating/populating the temperature category
 func NewOutput(inp Data) (out Output, err error) {
 	vals := inp.Properties.Periods[0]
 	out = Output{
