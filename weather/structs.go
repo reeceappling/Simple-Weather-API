@@ -2,11 +2,15 @@ package weather
 
 type PointsResponseBody struct {
 	ForecastUrl string `json:"forecast"`
+	// unused response fields not added to struct
+	// See full schema at https://www.weather.gov/documentation/services-web-api#/default/point
 }
 
 type Data struct {
 	Properties Properties
 	// unused response fields not added to struct
+	// See full schema at https://www.weather.gov/documentation/services-web-api#/default/gridpoint_forecast
+	// Note: This is the GEOJSON version, unlike from the points response
 }
 
 type Properties struct {
@@ -17,7 +21,7 @@ type Period struct {
 	ShortForecast   string
 	Temperature     int
 	TemperatureUnit string // F or C (I added K for fun)
-	// unused response fields not added to struct
+	// unused response fields not added to struct. See note on Data
 }
 
 type Output struct {
