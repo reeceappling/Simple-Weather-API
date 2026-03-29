@@ -98,10 +98,13 @@ func createAndRunServer(ctx context.Context, port int) {
 func middleware(routeName string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
+		requestId := uuid.New().String()
 		log := logging.GetLogger(ctx).
-			WithRequestId(uuid.New().String()).
+			WithRequestId(requestId).
 			WithRequestEndpointName(routeName)
+		log.Infow("Received Request")
 		next.ServeHTTP(w, r.WithContext(logging.SetLogger(ctx, log)))
+		log.Infow("Request Complete")
 	})
 }
 
