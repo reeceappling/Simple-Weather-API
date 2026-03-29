@@ -78,6 +78,4 @@ func GetLogger(ctx context.Context) *Logger {
 	return &Logger{
 		SugaredLogger: devLogger.With(devModeKeyValue).Sugar(),
 		LevelId:       "dev"}
-	////Default is a Noop logger // TODO: DEL
-	//return &Logger{SugaredLogger: zap.NewNop().Sugar()}
 }

@@ -65,7 +65,7 @@ func createAndRunServer(ctx context.Context, port int) {
 			log.Warnw("Received unhandled Signal. Stopping", "signal", v)
 		}
 		log.Info("Shutting server down")
-		// Typically I have a slight preference for using ECS clusters for hosting applications, and 30 seconds in the default ecs shutdown timer
+		// Typically I have a slight preference for using ECS clusters for hosting applications. 30 seconds is the default ecs shutdown timer
 		srvCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 		if err = srv.Shutdown(srvCtx); err != nil {
@@ -90,7 +90,7 @@ func createAndRunServer(ctx context.Context, port int) {
 	}
 }
 
-// middleware is a middleware for adding request id and routeNames to the context and logger
+// middleware is a middleware for adding request id and routeNames to the logger
 func middleware(routeName string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -101,15 +101,16 @@ func middleware(routeName string, next http.Handler) http.Handler {
 	})
 }
 
+// rootHandler is a basic health check endpoint which also functions as the default handler
 func rootHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// This is a basic health check endpoint which also functions as the default handler
 		if _, err := w.Write([]byte("server is running")); err != nil {
 			logging.GetLogger(r.Context()).Errorw("Error writing response", "error", err)
 		}
 	})
 }
 
+// getWeatherFor is the main function of the endpoint, but after we've already parsed all necessary data out of the request, so it is easier to test than a handler.
 func getWeatherFor(requestor weather.Requestor, lat, lon float64) (weather.Output, error) {
 	url, err := requestor.GetForecastUrl(lat, lon)
 	if err != nil {
